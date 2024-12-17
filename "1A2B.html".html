@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>1A2B</title>
+    <style>
+    	        body {
+            margin: 0;
+            height: 100vh; 
+            justify-content: center; 
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff; 
+            }
+    </style>
+</head>
+<body>
+    <h1>113502042_HW6_1A2B</h1>
+
+    <p>請輸入 4 個不重複的數字：</p>
+    <input id="userInput" type="text" maxlength="4" placeholder="例如: 1234">
+    <button onclick="checkGuess()">ＧＵＥＳＳ</button>
+
+    <div id="result"></div>
+    <p id="errorMessage" style="color: red;"></p>
+
+    <script>
+        let answer = generateAnswer();
+        let attempts = 0;
+        let gameOver = false; 
+
+        function generateAnswer() {
+            let digits = "0123456789".split("");
+            let result = [];
+            for (let i = 0; i < 4; i++) {
+                let randomIndex = Math.floor(Math.random() * digits.length);
+                result.push(digits[randomIndex]);
+                digits.splice(randomIndex, 1); 
+            }
+            console.log("答案:", result.join("")); 
+            return result;
+        }
+
+        function checkGuess() {
+            if (gameOver) {
+                alert("遊戲結束!");
+                return;
+            }
+
+            const userInput = document.getElementById("userInput").value;
+            const resultDiv = document.getElementById("result");
+            const errorDiv = document.getElementById("errorMessage");
+            const winImage = "win.jpg";
+			const loseImage = "lose.jpeg";
+
+            if (!/^\d{4}$/.test(userInput)) {
+                errorDiv.textContent = "請輸入 4 個不重複的數字！";
+                return;
+            }
+
+            if (new Set(userInput).size !== 4) {
+                errorDiv.textContent = "數字不能重複！";
+                return;
+            }
+
+            errorDiv.textContent = ""; 
+            attempts++;
+
+            let { A, B } = compareAnswer(userInput);
+
+            resultDiv.innerHTML += `<p>第 ${attempts} 次：${userInput} - ${A}A${B}B</p>`;
+
+            if (A === 4) {
+                alert(`恭喜答對！答案是 ${userInput}，共猜了 ${attempts} 次！`);
+                resultImage.src = winImage; 
+        		resultImage.style.display = "block"; 
+                gameOver = true;
+            } else if (attempts >= maxAttempts) { 
+        		alert(`遊戲結束！很可惜，正確答案是 ${answer.join("")}`);
+        		resultImage.src = loseImage; 
+        		resultImage.style.display = "block"; 
+        		gameOver = true; 
+  			}
+
+            document.getElementById("userInput").value = "";
+        }
+
+        function compareAnswer(userInput) {
+            let A = 0, B = 0;
+            const inputArray = userInput.split("");
+            for (let i = 0; i < 4; i++) {
+                if (inputArray[i] == answer[i]) {
+                    A++;
+                } else if (answer.includes(inputArray[i])) {
+                    B++;
+                }
+            }
+            return { A, B };
+        }
+    </script>
+</body>
+</html>
